@@ -1,14 +1,13 @@
-export default class Student {
-  private _enrollment: string;
-  private _name: string;
-  private _examGrades: number[];
-  private _projectGrades: number[];
+import Person from "./Person";
 
-  constructor(enrollment: string, name: string) {
-    this._enrollment = enrollment;
-    this._name = name;
-    this._examGrades = [];
-    this._projectGrades = [];
+export default class Student extends Person {
+  private _enrollment: string;
+  private _examGrades: number[] = [];
+  private _projectGrades: number[] = [];
+
+  constructor(name: string, birthDate: Date) {
+    super(name, birthDate);
+    this._enrollment = this.generateEnrollment() ;
   }
 
   get enrollmentGetter(): string {
@@ -16,18 +15,8 @@ export default class Student {
   }
 
   set enrollmentSetter(value: string) {
+    if (value.length < 16) throw new Error('A matrícula deve possuir no mínimo 16 caracteres.');
     this._enrollment = value;
-  }
-
-  get nameGetter(): string {
-    return this._name;
-  }
-
-  set nameSetter(value: string) {
-    if (value.length < 3) {
-      throw new Error("O nome deve conter no mínimo 3 caracteres.");
-    }
-    this._name = value;
   }
 
   get examGradesGetter(): number[] {
@@ -67,12 +56,10 @@ export default class Student {
     const media = somaTotalDasNotas / quantidadeDeNotas;
     return Number(media.toFixed(2));
   }
-}
 
-const notasProvas = [10, 7, 8, 5];
-const notasTrabalhos = [10, 6];
-const estudante1 = new Student("123", "Fellipe");
-estudante1.examGradesSetter = notasProvas;
-estudante1.projectGradesSetter = notasTrabalhos;
-console.log(`Soma das notas: ${estudante1.sumGrades()}`);
-console.log(`Média das notas: ${estudante1.calcAverage()}`);
+  generateEnrollment(): string {
+    const randomStr = String(Date.now() * (Math.random() + 1)).replace(/\W/g, '');
+
+    return `STU${randomStr}`;
+  }
+}
